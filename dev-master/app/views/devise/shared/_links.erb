@@ -1,0 +1,9 @@
+<% if user_signed_in? %>
+  <li><%= link_to 'Profile', "http://people.lelylan.com/" %></li>
+  <li><%= link_to 'Authorized Apps', "http://people.lelylan.com//oauth/authorized_applications" %></li>
+  <li><%= link_to 'Your Apps', "http://people.lelylan.com//oauth/applications" %></li>
+  <li><%= link_to "Sign out #{current_user.email}", destroy_user_session_path, method: :delete %></li>
+<% else %>
+  <li><%= link_to 'Sign in', new_user_session_path  %></li>
+  <li><%= link_to 'Forgot your password?', new_password_url(resource_name, people_options) %><li>
+<% end %>

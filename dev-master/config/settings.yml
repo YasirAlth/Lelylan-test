@@ -1,0 +1,11 @@
+titles:
+  'getting-started': Getting Started
+  'makers': Makers API
+  'developers': Developers API
+  'types': Types API
+  'code-examples': Code Examples
+  'support': support
+code_pages:
+  - makers
+  - developers
+  - types

@@ -1,0 +1,18 @@
+development:
+  sessions:
+    default:
+      uri: <%= ENV['MONGOLAB_PEOPLE_URL'] || 'mongodb://localhost:27017/people_development' %>
+test:
+  sessions:
+    default:
+      database: people_test
+      hosts:
+        - localhost:27017
+      options:
+        consistency: :strong
+  options:
+production:
+  sessions:
+    default:
+      uri: <%= ENV['MONGOLAB_PEOPLE_URL'] %>
+  options:

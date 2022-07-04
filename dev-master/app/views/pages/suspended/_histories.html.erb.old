@@ -1,0 +1,337 @@
+<article>
+
+<aside class="menu">
+</br>
+<table>
+  <tbody>
+    <tr><td><a href="" class="upcase"><%= title %></a></td></tr>
+    <tr><td>&raquo; <a href="#get-a-history">Get a history</a></td></tr>
+    <tr><td>&raquo; <a href="#get-all-histories">Get all histories</a></td></tr>
+  </tbody>
+</table>
+</aside>
+
+<h1 class="call"><a name="histories"><%= title %></a></h1>
+
+<p>
+When a device <a href="/api/devices#update-properties">updates its properties</a> or
+<a href="/api/devices#update-properties">executes a function</a> a new history resource
+with a snapshot of all device properties is created by Lelylan, also the ones that has
+not been updated. This makes it easy to recreate previous device status and extract
+usage patterns to improve the way people live their house.
+</p>
+
+<p class="notice">
+<span class="label">notice</span>
+During the beta period history resources can be cleared at any time.
+For this reason treat them as highly temporary.
+</p>
+
+</article>
+
+<br/>
+
+<article>
+
+  <h1 class="call"><a name="get-a-history">GET /histories/:id</a></h1>
+
+  <p>
+    Returns extended information for a given history identified from its ID
+  </p>
+
+  <h4>Resource URL</h4>
+  <div class="preview">
+  <pre><code>GET http://api.lelylan.com/histories/:id</code></pre>
+  </div>
+
+  <h4>Parameters</h4>
+
+  <table class="zebra-striped">
+    <tbody>
+      <tr>
+        <td class="parameter">
+          <span>id</span>
+          <span class="info">required</span>
+        </td>
+        <td>
+          The ID of the desired history.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>Example Request</h4>
+
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#get-a-history-curl" data-toggle="tab" class="curl">Curl</a></li>
+    <li><a href="#get-a-history-node" data-toggle="tab" class="node">Node.js</a></li>
+    <li><a href="#get-a-history-angular" data-toggle="tab" class="angular">AngularJS</a></li>
+    <li><a href="#get-a-history-ruby" data-toggle="tab" class="ruby">Ruby</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane active" id="get-a-history-curl">
+      <div class="preview">
+        <pre><xmp>curl http://api.lelylan.com/histories/<id> \
+-H 'Authorization: Bearer <token>'</xmp></pre>
+      </div>
+    </div>
+    <div class="tab-pane" id="get-a-history-node">
+      <div class="preview">
+        <pre class="prettyprint"><xmp>var Lelylan = require('lelylan-node')({ token: token });
+Lelylan.History.find('<id>', callback);</xmp></pre>
+      </div>
+    </div>
+    <div class="tab-pane" id="get-a-history-angular">
+      <div class="preview">
+      <pre class="prettyprint"><xmp><html ng-app="lelylan">
+<body>
+  <!-- login component here (dev.lelylan.com/api/oauth#implicit-grant-angular) -->
+  <div ng-controller="LelylanController">{{history}}</div>
+  <script>
+    function LelylanController($scope, History) {
+      $scope.history = History.get({ id: '<id>' });
+    }
+  </script>
+
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular-resource.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular-cookies.min.js"></script>
+  <script src="//s.lelylan.com/angularjs/0.1.0/lelylan.min.js"/></script>
+</body>
+</html></xmp></pre>
+      </div>
+    </div>
+    <div class="tab-pane" id="get-a-history-ruby">
+      <div class="preview">
+        <pre class="prettyprint"><xmp>lelylan = Lelylan::Client.new(token: token)
+history = lelylan.history('<id>')</xmp></pre>
+      </div>
+    </div>
+  </div>
+
+  <h4>Example header response</h4>
+
+  <div class="preview"><pre><code>HTTP/1.1 200 OK</code></pre></div>
+
+  <h4 id="history-representation">Example body response</h4>
+
+  <div class="preview"><pre><code>{
+  "uri": "http://api.lelylan.com/histories/5042490a6de0740d00000004",
+  "id": "5042490a6de0740d00000004",
+  "device": { "uri": "http://api.lelylan.com/devices/5042344b95fc441000000001" },
+  "source": "physical",
+  "created_at": "2012-09-01T17:42:34Z",
+  "properties": [{
+    "uri": "http://api.lelylan.com/properties/50420c7e267ff51000000001",
+    "id": "50420c7e267ff51000000001",
+    "value": "50",
+    "expected": "100",
+    "pending": true
+  }]
+}</code></pre></div>
+
+<h4>Body response explained</h4>
+
+<dl>
+  <dd><span>uri</span> - History URI.</dd>
+  <dd><span>id</span> - History ID.</dd>
+  <dd><span>device</span> - Changed device URI.</dd>
+  <dd><span>source</span> - History resource created or not from a physical device request (<code>physical</code> if the request comes
+  from the physical device, <code>lelylan</code> otherwise).</dd>
+  <dt><span>properties</span> - Changed device properties.</dt>
+  <div>
+    <dd><span>uri</span> - Property URI.</dd>
+    <dd><span>value</span> - Changed property value.</dd>
+    <dd><span>expected</span> - Expected property value. <a href="/community/faq#value-expected-pending">Learn more about</a>.</dd>
+    <dd><span>pending</span> - Property pending status. <a href="/community/faq#value-expected-pending">Learn more about</a>.</dd>
+  </div>
+</dl>
+
+</article>
+
+<br/>
+
+<article>
+<h1 class="call"><a name="get-all-histories">GET /histories</a></h1>
+
+<p>
+  Returns a list of history resources related to owned devices.
+</p>
+
+<h4>Resource URL</h4>
+<div class="preview">
+<pre><code>GET http://api.lelylan.com/histories</code></pre>
+</div>
+
+<h4>Parameters</h4>
+
+<table class="zebra-striped">
+  <tbody>
+    <tr>
+      <td class="parameter">
+        <span>device</span>
+        <span class="info">optional</span>
+      </td>
+      <td>
+        The device URI of the desired history resources.
+      </td>
+    </tr>
+    <tr>
+      <td class="parameter">
+        <span>source</span>
+        <span class="info">optional</span>
+      </td>
+      <td>
+        History resource created or not from a physical device request.
+        <span class="info">Valid values: 'physical', 'lelylan'</span>
+      </td>
+    </tr>
+    <tr>
+      <td class="parameter">
+        <span>properties[uri]</span>
+        <span class="info">optional</span>
+      </td>
+      <td>
+        Property URI to search.
+      </td>
+    </tr>
+    <tr>
+      <td class="parameter">
+        <span>properties[value]</span>
+        <span class="info">optional</span>
+      </td>
+      <td>
+        Property value to search.
+      </td>
+    </tr>
+    <tr>
+      <td class="parameter">
+        <span>properties[expected]</span>
+        <span class="info">optional</span>
+      </td>
+      <td>
+        Expected value to search. <a href="/community/faq#value-expected-pending">Learn more about</a>
+      </td>
+    </tr>
+    <tr>
+      <td class="parameter">
+        <span>properties[pending]</span>
+        <span class="info">optional</span>
+      </td>
+      <td>
+        Pending property status to search. <a href="/community/faq#value-expected-pending">Learn more about</a>
+        <span class="info">Valid values: true, false.</span>
+      </td>
+    </tr>
+    <tr>
+      <td class="parameter">
+        <span>from</span>
+        <span class="info">optional</span>
+      </td>
+      <td>
+        Get all resources created after this time. See <a href="/api/core/#time-formats">accepted time formats</a>.</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="parameter">
+        <span>to</span>
+        <span class="info">optional</span>
+      </td>
+      <td>
+        Get all resources created before this time. See <a href="/api/core/#time-formats">accepted time formats</a>.</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="parameter">
+        <span>start</span>
+        <span class="info">optional</span>
+      </td>
+      <td>
+        URI of the last fetched record. Learn more about <a href="/api/core/#pagination">pagination</a>.
+      </td>
+    </tr>
+    <tr>
+      <td class="parameter">
+        <span>per</span>
+        <span class="info">optional</span>
+        <span class="info">default to '25'</span>
+      </td>
+      <td>
+        Number of resources per page.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Example Request</h4>
+
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#get-all-histories-curl" data-toggle="tab" class="curl">Curl</a></li>
+  <li><a href="#get-all-histories-node" data-toggle="tab" class="node">Node.js</a></li>
+  <li><a href="#get-all-histories-angular" data-toggle="tab" class="angular">AngularJS</a></li>
+  <li><a href="#get-all-histories-ruby" data-toggle="tab" class="ruby">Ruby</a></li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" id="get-all-histories-curl">
+    <div class="preview">
+      <pre><xmp>curl http://api.lelylan.com/histories?from=2012-07-03+12:45:29Z \
+     -H 'Authorization: Bearer <token>'</xmp></pre>
+    </div>
+  </div>
+  <div class="tab-pane" id="get-all-histories-node">
+    <div class="preview">
+      <pre class="prettyprint"><xmp>var Lelylan = require('lelylan-node')({ token: token });
+var params = { 'from': '2012-07-03 12:45:29Z' };
+Lelylan.History.all(params, callback);</xmp></pre>
+    </div>
+  </div>
+  <div class="tab-pane" id="get-all-histories-angular">
+    <div class="preview">
+      <pre class="prettyprint"><xmp><html ng-app="lelylan">
+<body>
+  <!-- login component here (dev.lelylan.com/api/oauth#implicit-grant-angular) -->
+  <div ng-controller="LelylanController">
+    <div ng-repeat="history in histories">{{history}}</div>
+  </div>
+  <script>
+    function LelylanController($scope, History) {
+      var params = { 'from': '2012-07-03 12:45:29Z' };
+      $scope.histories = History.query(params);
+    }
+  </script>
+
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular-resource.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular-cookies.min.js"></script>
+  <script src="//s.lelylan.com/angularjs/0.1.0/lelylan.min.js"/></script>
+</body>
+</html></xmp></pre>
+    </div>
+  </div>
+  <div class="tab-pane" id="get-all-histories-ruby">
+    <div class="preview">
+      <pre class="prettyprint"><xmp>lelylan = Lelylan::Client.new(token: token)
+histories = lelylan.histories</xmp></pre>
+    </div>
+  </div>
+</div>
+
+<h4>Example header response</h4>
+
+<div class="preview"><pre><code>HTTP/1.1 200 OK</code></pre></div>
+
+<h4 id="history-representation">Example body response</h4>
+
+<div class="preview highlight"><pre><code>[
+  { # device history representation },
+  { # device history representation },
+  ...
+]</code></pre></div>
+
+<p>
+  See <a href="#history-representation">device history representation</a> for body response.
+</p>
+
+</article>

@@ -1,0 +1,124 @@
+<br><br>
+
+<h2 id="faq-device-and-physical-device-differences">Devices and Physical Devices Differences</a></h2>
+
+<p>
+The differences between a Device and a Physical Device (aka Physicals) isn't always clear.
+</p>
+
+<ul>
+  <li>
+  <em>Device</em> - Is the virtual representation of any object. A device can be
+  simulate all interaction or can be connected to the physical world by setting the
+  <code>physical</code> attribute.
+  </li>
+  <li>
+  <em>Physical device</em> - Is the physical object you interact with in the real world.
+  It's can be connected to a Device to let Lelylan control the real world.
+  </li>
+</ul>
+
+<hr>
+
+
+
+<h2 id="faq-value-expected-pending">Value, Expected and Pending</h2>
+
+<p>
+A device can be monitored or controlled through the <code>value</code> param. The problem is that
+using only <code>value</code> you can't have a full control of your device's status. Think at
+a window. How can I distinguish the actual opening level from the desired one? How can I
+know when it's finally open? To solve those problems Lelylan let you update a property using three
+params.
+</p>
+
+<ul>
+  <li>
+  <em>value</em> - Represents the actual value of the physical device property.
+  </li>
+  <li>
+  <em>expected</em> - Represents the expected property value for the physical device property.
+  </li>
+  <li>
+  <em>pending</em> - A property is pending when the expected value and value doesn't match.
+  </li>
+</ul>
+
+<h3>Real world example</h3>
+
+<p>
+<em>1.</em> You decide to open the window with your mobile app. When doing so you set the
+<code>expected</code> level to 100 and set the <code>pending</code> status to true. The
+device will be pending until the physical device does totally open the window.
+</p>
+
+<p>
+<em>2.</em> The physical device sends some intermediate messages to Lelylan notifying
+Lelylan when the window is opening. For example, supposing it's half open, the physical will
+set <code>value</code> to 50 and <code>pending</code> to false as the window is not totally open.
+</p>
+
+<p>
+<em>3.</em> The physical device tells Lelylan that the window is totally open by
+setting the device <code>value</code> to 100. We do not set the <code>pending</code> status
+as it's set to false by default.
+As you can see now the expected and the value matches and the pending status is false.
+</p>
+
+<hr>
+
+
+
+<h2 id="faq-accepted-values">Accepted values</h2>
+
+<p>
+The field <code>accepted</code> represents a list of objects where the key
+is the value used to update the device properties and the value is a friendly description.
+</p>
+
+<div class="code-block">
+<pre><code class="ruby">{ "accepted": [{ "key": "on", "value": "On" }, { "key": "off", "value": "Off" }] }</code></pre>
+</div>
+
+<p>
+Populating the accepted list gives two main benefits.
+</p>
+
+<ul>
+  <li>
+  <em>Uniformity</em> - A clear definition of the values accepted form the device property.
+  </li>
+  <li>
+  <em>Presentation</em> - Better user interface automatic generation.
+  </li>
+</ul>
+
+<p>
+When creating a device, the accepted values are inherited by the
+<a href="/api#api-type-properties">type properties</a>, but if you want you can change it
+on every device. This is useful in scenarios where a device needs to have custom
+accepted values (e.g. a television setting the channel names).
+</p>
+
+<hr>
+
+
+<h2 id="faq-device-status">Device Status</h2>
+
+<p>
+Sometimes properties are not enough to describe the device status. Think at a window for
+example. It has the property status that accepts the values open and close. Now think at
+what happens when a window is opening. It is neither open or close: it's opening. To have
+a complete control over the device at every moment of its life use the
+<a href="/api#api-type-statuses">status resource</a>.
+</p>
+
+<div class="alert alert-info">
+  <p>
+  <span class="label label-lelylan">notice</span>
+    A basic implementation is available on the
+    <a href="http://lelylan.github.io/device-directive-ng/">AngularJS Device Directive</a>
+    to give the device status description. Right now this service is not available on server side
+    for performance reasons.
+  </p>
+</div>
